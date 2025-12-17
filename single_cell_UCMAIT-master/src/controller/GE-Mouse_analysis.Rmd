@@ -25,6 +25,7 @@ library(grid)
 library(gridExtra)
 library(Rtsne)
 library(stringr)
+library(uwot)
 ```
 
 ```{r fig.width=22, fig.height=25, warning=FALSE, error=FALSE, message=FALSE, echo=FALSE, comment=NA}
@@ -53,6 +54,8 @@ funcFiles <- c("formatRaw.R",
                "tableBarPlots.R",
                "clusterReport.R",
                "reportViolins.R",
+               "reportUMAP.R",
+               "plotUMAP.R",
                "reportTSNE.R",
                "plotTSNE.R")
 funcFiles <- paste(funcDir, funcFiles, sep="")
@@ -79,10 +82,10 @@ ctNorm[is.na(ctNorm)] <- 0
 
 ```{r fig.width=22, fig.height=25, warning=FALSE, error=FALSE, message=FALSE, echo=FALSE, comment=NA}
 ## cluster and filter
-ctClust <- clusterFilter_1st(ctNorm, testK = T, numCenters = 6, plotHeatmap=T, plotClustOnly=F,
+ctClust <- clusterFilter_1st(ctNorm, testK = T, numCenters = 2, plotHeatmap=T, plotClustOnly=F,
                           heatmapFactor = "kmeans.cluster", heatmapColorBy = c(),
                           heatmapTissueLabel = "NOD Doublets",
-                          fisherTests = c(),
+                          fisherTests = c("kmeans.cluster"),
                          # fisherTests = NULL,
                           cumulativeExpHist = T, filterClusters = F, clustersToRemove = c())
 ```
@@ -90,11 +93,11 @@ ctClust <- clusterFilter_1st(ctNorm, testK = T, numCenters = 6, plotHeatmap=T, p
 ```{r fig.width=22, fig.height=25, warning=FALSE, error=FALSE, message=FALSE, echo=FALSE, comment=NA}
 ## cluster again to check performance
 ###SMS edit: If you want to use "filterClusters" to remove a cluster you still have to specify which cluster to remove in "clusterToRemove".
-ctClust <- clusterFilter_2nd(ctClust, testK = T, numCenters = 8, plotHeatmap=T, plotClustOnly=F,
+ctClust <- clusterFilter_2nd(ctClust, testK = T, numCenters = 2, plotHeatmap=T, plotClustOnly=F,
                           heatmapFactor = "kmeans.cluster",
                           heatmapColorBy = c(),
                           heatmapTissueLabel = "filtered T1D Initial Draw",
-                          fisherTests = c(),
+                          fisherTests = c("kmeans.cluster"),
                          # fisherTests = NULL,
                           cumulativeExpHist = T, filterClusters = F, clustersToRemove = c())
 
@@ -104,7 +107,27 @@ ctClust <- clusterFilter_2nd(ctClust, testK = T, numCenters = 8, plotHeatmap=T, 
 #### t-sne reports ####
 ###This function has been updated from LG's original. The colorby vector can take the following options: "kmeans.cluster", "probe", "patient", "age", "FRorFZ", "tissue", "IBD_Status", "Gene_List". "kmeans.cluster" = tSNE colored by the kmeans clustering numbers, "probe" refers to the Patient IDs. "patient" refers to the cohort the donor is ###from,"tissue source" refers to the tissue the MAIT cell was isolated from (inflamed, uninflamed or blood). IBD_Status is whether the donor was a UC or Crohn's patient. ###"Gene_List" is a bit complicated. It is an option if you want to see the tSNE colored by expression level of specific genes. If you would like to see the expression level on ###the tSNE, you need to include "Gene_List" in the "color_by" vector and the list of genes you'd like to see in the "Genes" input.
 
-ctClust <- plotTSNE(ctClust, colorby = c("kmeans.cluster", "Gene_List"), Genes = c("ACTA2","ACVR1","ADGRE1","ANGPT1","ANPEP","AIM2","BCL2","BCL6","BMP5","BMP7",
+#ctClust <- plotTSNE(ctClust, colorby = c("kmeans.cluster", "Gene_List"), Genes = c("ACTA2","ACVR1","ADGRE1","ANGPT1","ANPEP","AIM2","BCL2","BCL6","BMP5","BMP7",
+#"CCL13","CCR1","CCR2","CCR3","CCR4","CCR5","CCR6","CCR7","CD14","CD24A","CD28",
+#"CD36","CD3E","CD4","CD40","CD44","CD74","CD80","CD83","CD86","CD8A","CEACAM1",
+#"CLEC7A","COL11A1","COL1A1","COL1A2","CSF1","CSF1R","CSF2RA","CSF2RB","CXCL10",
+#"CXCL13","CXCR3","CXCR4","DES","EGFR","FAP","FCGR1","FGFR1","FGFR3","FGR","FYN",
+#"GAPDH","GATA4","GCG","GFAP","GHRL","GM13889","GSK3A","GSK3B","H2-AA","H2-DMA",
+#"HIF1A","HPRT","IAPP","ICAM1","ICAM2","ICOS","ICOSL","IFIT1","IFIT3","IFI44",
+#"IFI44L","IFNG","IFNGR1","IGF1","IGF2","IL-21","IL1A","IL1B","IL1R2","IL2","IL2RA",
+#"IL3","IL4","IL4RA","IL5","IL5RA","IL6","IL7","IL7R","IL10","IL12B","IL12RB","IL17A",
+#"IL18R1","IL25","IL27","IL27R","IL34","INS1","INS2","IRF1","IRF2","IRF4","IRF7",
+#"ISG15","ITGAX","ITGB1","JAK1","JAK2","KDR","KLF5","LCK","LEPR","LY6E","LY75",
+#"MAP2K6","MAPK8","MMP1A","MMP2","MMP3","MMP9","MX1","NFATC1","NFKB1","NLRP3",
+#"NUR77","OAS1B","OAS2","OASL1","PD1","PDL-1","PDGFA","PDGFB","PDGFRB","PDPN",
+#"PECAM1","PPARA","PPARG","PPARGC1A","PPY","PTEN","PTGS2","PTK2","RSAD2","RSPO1",
+#"SELE","SFRP1","SOCS3","SPP1","SST","STAT1","STAT3","STAT4","STAT5","TBX21",
+#"TEK","TGFB1","TGFBR2","TIMP1","TIMP2","TLR3","TLR4","TLR7","TLR9","TNC",
+#"TNF","TNFAIP3","TNFRSF1A","TNFRSF1B","TNFSF11","TRAF2","VAV1","VCAM1","VEGFA",
+#"VEGFB","WNT2B","WNT4","ZAP70","ZEB2"))
+
+#ZO edit: Now using UMAP
+ctClust <- plotUMAP(ctClust, colorby = c("kmeans.cluster", "Gene_List"), Genes = c("ACTA2","ACVR1","ADGRE1","ANGPT1","ANPEP","AIM2","BCL2","BCL6","BMP5","BMP7",
 "CCL13","CCR1","CCR2","CCR3","CCR4","CCR5","CCR6","CCR7","CD14","CD24A","CD28",
 "CD36","CD3E","CD4","CD40","CD44","CD74","CD80","CD83","CD86","CD8A","CEACAM1",
 "CLEC7A","COL11A1","COL1A1","COL1A2","CSF1","CSF1R","CSF2RA","CSF2RB","CXCL10",

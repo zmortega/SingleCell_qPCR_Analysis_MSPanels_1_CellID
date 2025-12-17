@@ -979,6 +979,41 @@ clusterFilter_1st <- function(ctInput, testK = F, numCenters = 2, plotHeatmap=F,
     clusterVals <- unique(ctClust$kmeans.cluster)
     clusterVals <- clusterVals[order(clusterVals)]
     
+    ## cluster counts (what you want back)
+    if ("kmeans.cluster" %in% fisherTests) {
+      
+      # numeric cluster IDs in correct order
+      clusterVals <- unique(ctClust$kmeans.cluster)
+      clusterVals <- clusterVals[order(clusterVals)]
+      
+      # counts table in the same "cluster_" style as your other outputs
+      clusterCounts <- as.integer(table(factor(ctClust$kmeans.cluster, levels = clusterVals)))
+      clusterTable  <- matrix(clusterCounts, nrow = length(clusterVals), ncol = 1)
+      rownames(clusterTable) <- paste("cluster_", clusterVals, sep = "")
+      colnames(clusterTable) <- "n_cells"
+      
+      cat("\n\nCells per Cluster\n")
+      print(clusterTable)
+      
+      # bar chart
+      clusterDF <- data.frame(
+        kmeans.cluster = factor(clusterVals, levels = clusterVals),
+        n_cells        = clusterCounts
+      )
+      
+      plClusterCounts <- ggplot(clusterDF, aes(x = kmeans.cluster, y = n_cells)) +
+        geom_col() +
+        geom_text(aes(label = n_cells), vjust = -0.35, size = 7) +   # <-- counts on bars
+        scale_y_continuous(expand = expansion(mult = c(0, 0.10))) +  # <-- adds space above labels
+        labs(title = "Cells per cluster", x = "kmeans.cluster", y = "Number of cells") +
+        theme_minimal() +
+        theme(text = element_text(size = 25),
+              plot.margin = unit(c(8,2,8,2), "cm"))
+      
+      print(plClusterCounts)
+    }
+    
+    
     ## probe
     if("probe" %in% fisherTests){
       probes <- unique(ctClust$probe)
