@@ -51,11 +51,12 @@ dataLoad <- function(Project,Species,FreshorFrozen,Panel,Troubleshoot,CombineCom
               "CD14",	"CD44",	"COL1A1",	"DES",	"MR1",	"HLA-DRA",	"IL1B",	"LYVE1",	"PDPN",	"TEK",	"TLR8",	"WNT4")
    
     } else if (MousePanels == TRUE) {
-   Panel1<- c("Aim2","Bcl2","Bcl6","Ccr1","ccr2","ccr3","ccr4","ccr5","ccr6","Ccr7","cd28","cd3e","cd4","cd40","Cd44","cd80","cd86","cd8a","Ceacam1","ctla4",
-              "Cxcl10","Cxcr3","Cxcr4","foxp3","Fyn","gapdh","gata4","gsk3a","gsk3b","Hprt","icam1","Icos","Ifi44","Ifi44l","Ifit1","Ifit3","ifng","Ifngr1",
-              "IL-21","il10","il12b","Il12rb","il17A","Il18r1","il1r2","il2","il25","Il27","Il27r","il2ra","il3","il4","il4ra","il5","il5ra","il6","il7","il7r",
-              "Irf1","Irf2","Irf4","Irf7","Isg15","Jak1","Jak2","Ly6e","Map2k6","Mapk8","Mx1","nfkb1","Nur77","Oas1b","Oas2","Oasl1","Pd1","Pdl-1","ppara","pparg",
-              "ppargc1a","pten","Rsad2","Socs3","Stat1","Stat3","Stat4","Stat5","Tbx21","Tgfbr2","tnf","Tnfaip3","tnfrsf1a","tnfrsf1b","Traf2","Vav1","Zap70","Zeb2")
+   Panel1<- c("AIM2","BCL2","BCL6","CCR1","CCR2","CCR3","CCR4","CCR5","CCR6","CCR7","CD28","CD3E","CD4","CD40","CD44","CD80","CD86","CD8A","CEACAM1","CTLA4",
+              "CXCL10","CXCR3","CXCR4","FOXP3","FYN","GAPDH","GATA4","GSK3A","GSK3B","HPRT","ICAM1","ICOS","IFI44","IFI44L","IFIT1","IFIT3","IFNG","IFNGR1",
+              "IL-21","IL10","IL12B","IL12RB","IL17A","IL18R1","IL1R2","IL2","IL25","IL27","IL27R","IL2RA","IL3","IL4","IL4RA","IL5","IL5RA","IL6","IL7","IL7R",
+              "IRF1","IRF2","IRF4","IRF7","ISG15","JAK1","JAK2","LY6E","MAP2K6","MAPK8","MX1","NFKB1","NUR77","OAS1B","OAS2","OASL1","PD1","PDL-1","PPARA","PPARG",
+              "PPARGC1A","PTEN","RSAD2","SOCS3","STAT1","STAT3","STAT4","STAT5","TBX21","TGFBR2","TNF","TNFAIP3","TNFRSF1A","TNFRSF1B","TRAF2","VAV1","ZAP70","ZEB2")
+
    CellID<- c("ACTA2","ACVR1","ADGRE1","ANGPT1","ANPEP","BMP5","BMP7","CD14","CD24A","CD36","CD3E","CD4","CD44","CD74","CD80","CD83","CD86","CD8A",   
               "CLEC7A","COL11A1","COL1A1","COL1A2","CSF1","CSF1R","CSF2RA","CSF2RB","CXCL13","DES","EGFR","FAP","FCGR1","FGFR1","FGFR3","FGR","FLT4","GCG",    
               "GFAP","GHRL","GM13889","H2-AA","H2-DMA","HIF1A","IAPP","ICAM1","ICAM2","ICOSL","IFNG","IGF1","IGF2","IL1A","IL1B","IL34","INS1","INS2",   
